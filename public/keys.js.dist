@@ -1,0 +1,5 @@
+// Copy/rename this file as keys.js and add the actual keys below
+
+// Keys for Azure Speech SDK
+const subscriptionKey = "";
+const serviceRegion = "";

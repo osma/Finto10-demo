@@ -1,0 +1,7 @@
+{
+  "dependencies": {
+    "bootstrap": "^5.3.3",
+    "botui": "^0.3.9",
+    "vue": "^2.7.16"
+  }
+}

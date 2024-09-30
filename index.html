@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI-Finto</title>
+  <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="public/botui.min.css">
+  <link rel="stylesheet" href="public/botui-theme-default.css">
+  <script src="node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="node_modules/vue/dist/vue.min.js"></script>
+  <script src="public/botui.js"></script>
+  <script src="public/keys.js"></script>
+  <script src="https://aka.ms/csspeech/jsbrowserpackageraw"></script>
+<style>
+@font-face {
+  font-family: 'Oxanium';
+  src: url('public/Oxanium-VariableFont_wght.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+body {
+  font-family: 'Oxanium', sans-serif;
+  font-size: 18px;
+  color: #ecd063;
+}
+
+.height-full { height: 100vh; }
+
+#container {
+  background-color: #3c536a;
+  background-image:  linear-gradient(#6e8990 1px, transparent 1px), linear-gradient(to right, #6e8990 1px, #3c536a 1px);
+  background-size: 20px 20px;  
+}
+
+#main, #energy {
+  border: 3px solid #b5b4b2;
+  border-radius: 1em;
+  border-style: groove;
+
+  background: rgb(11,21,28);
+  background: linear-gradient(180deg, rgba(11,21,28,1) 0%, rgba(16,34,44,1) 100%); 
+  flex-grow: 1;
+  filter: blur(0);
+  box-shadow: 0 0 30px rgba(0, 0, 0, 1.0);
+}
+
+#botui-row {
+  height: 80vh;
+}
+
+#energy-row {
+  height: 20vh;
+}
+
+#energy-avail {
+  color: #b5d294;
+  background-color: #2a6c4b;
+  border: 1px solid #70a467;
+  border-style: groove;
+  border-radius: 3px;
+  font-weight: bold;
+}
+
+#meter {
+  background: #1e3a3e;
+  width: 80%;
+}
+
+#meter:-moz-meter-optimum::-moz-meter-bar {
+  background: #5a4a19;
+}
+#meter:-moz-meter-sub-optimum::-moz-meter-bar {
+  background: #8b7123;
+}
+#meter:-moz-meter-sub-sub-optimum::-moz-meter-bar {
+  background: #e5cf61;
+}
+
+#version {
+  font-size: 12px;
+  position: absolute;
+  bottom: 0.2em;
+  left: 1.5em;
+}
+
+</style>
+  
+</head>
+<body>
+
+  <div id="container" class="container-fluid height-full">
+    <div class="row">
+      <div class="col-3">
+        <div class="row" id="botui-row">
+          <div class="col-12">
+            <div id="botui-app">
+              <bot-ui></bot-ui>
+            </div>
+          </div>
+        </div>
+        <div class="row" id="energy-row">
+          <div class="col-12 d-flex">
+            <div id="energy" class="mb-4 my-4 p-3">
+              <div class="row">
+                <div class="col-6">Energiankulutus:</div>
+                <div class="col-6"><meter class="mx-1" id="meter" value="90" min="0" max="100" high="60" low="20" optimum="0"></meter></div>
+              </div>
+              <div class="row">
+                <div class="col-6">Energian&nbsp;saatavuus:</div>
+                <div class="col-6"><span class="m-1 p-1" id="energy-avail">Hyvä ️☀️☀️☀️</span> </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-9 height-full p-0 d-flex" id="main-col">
+        <div id="main" class="me-3 my-4 p-4">
+          main content
+
+          <button id="startButton">Start Listening</button>
+          <button id="stopButton" disabled>Stop Listening</button>
+
+          <button id="startSpeakTextAsyncButton">Start Text to Speech</button>
+          <textarea id="resultDiv" style="display: inline-block;width:500px;height:100px"></textarea>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+<div id="version">SkosmosisNG-8.2.1</div>
+
+</body>
+
+<script>
+    let audioConfig;
+    let speechConfig;
+    let recognizer;
+    let synthesizer;
+
+    speechConfig = SpeechSDK.SpeechConfig.fromSubscription(subscriptionKey, serviceRegion);
+    // Set the speech recognition language to Finnish
+    speechConfig.speechRecognitionLanguage = "fi-FI";
+    // Set the text-to-speech voice and language
+    speechConfig.speechSynthesisVoiceName = "fi-FI-SelmaNeural";
+    speechConfig.speechSynthesisLanguage = "fi-FI";
+
+    startSpeakTextAsyncButton = document.getElementById("startSpeakTextAsyncButton");
+    startSpeakTextAsyncButton.addEventListener("click", function () {
+        startSpeakTextAsyncButton.disabled = true;
+        speakText('Tervetuloa Fintoon! Autamme sinua tutkimaan yhteisiä käsitteitämme. Mihin tarkoitukseen etsit tietoa?');
+    });
+
+    function speakText(inputText) {
+        synthesizer = new SpeechSDK.SpeechSynthesizer(speechConfig);
+        resultDiv = document.getElementById("resultDiv");
+
+        synthesizer.speakTextAsync(
+          inputText,
+          function (result) {
+            if (result.reason === SpeechSDK.ResultReason.SynthesizingAudioCompleted) {
+              resultDiv.innerHTML += "synthesis finished for [" + inputText + "].\n";
+            } else if (result.reason === SpeechSDK.ResultReason.Canceled) {
+              resultDiv.innerHTML += "synthesis failed. Error detail: " + result.errorDetails + "\n";
+            }
+            window.console.log(result);
+            synthesizer.close();
+            synthesizer = undefined;
+          },
+          function (err) {
+            startSpeakTextAsyncButton.disabled = false;
+            resultDiv.innerHTML += "Error: ";
+            resultDiv.innerHTML += err;
+            resultDiv.innerHTML += "\n";
+            window.console.log(err);
+
+            synthesizer.close();
+            synthesizer = undefined;
+        });        
+    }
+
+
+    document.getElementById('startButton').addEventListener('click', function () {
+        startListening();
+    });
+
+    document.getElementById('stopButton').addEventListener('click', function () {
+        stopListening();
+    });
+
+    function startListening() {
+        
+        audioConfig = SpeechSDK.AudioConfig.fromDefaultMicrophoneInput();
+
+        recognizer = new SpeechSDK.SpeechRecognizer(speechConfig, audioConfig);
+
+        // Create a phrase list and add specific words
+        const phraseList = SpeechSDK.PhraseListGrammar.fromRecognizer(recognizer);
+        phraseList.addPhrase("Finto");
+        phraseList.addPhrase("Finto AI");
+        phraseList.addPhrase("YSO");
+
+        recognizer.recognizing = function (s, e) {
+            // transient change - modify the textarea directly, not through Vue
+            document.querySelector('.botui-actions-text-input').value = e.result.text;
+        };
+
+        recognizer.recognized = function (s, e) {
+            if (e.result.reason === SpeechSDK.ResultReason.RecognizedSpeech) {
+                // change the content of the textarea through Vue
+                window.botInstance.action.text.value = e.result.text;
+                document.querySelector('.botui-actions-text-submit').click();
+            } else if (e.result.reason === SpeechSDK.ResultReason.NoMatch) {
+                window.botInstance.action.text.value = '';
+            }
+        };
+
+        recognizer.canceled = function (s, e) {
+            console.error(`Canceled: ${e.reason}`);
+            if (e.reason === SpeechSDK.CancellationReason.Error) {
+                console.error(`Error details: ${e.errorDetails}`);
+            }
+            stopListening();
+        };
+
+        recognizer.sessionStopped = function (s, e) {
+            console.log("Session stopped.");
+            stopListening();
+        };
+
+        recognizer.startContinuousRecognitionAsync();
+
+        document.getElementById('startButton').disabled = true;
+        document.getElementById('stopButton').disabled = false;
+    }
+
+    function stopListening() {
+        recognizer.stopContinuousRecognitionAsync(() => {
+            recognizer.close();
+            recognizer = undefined;
+            
+        });
+
+        document.getElementById('startButton').disabled = false;
+        document.getElementById('stopButton').disabled = true;
+    }
+</script>
+
+
+
+<script>
+  var botui = new BotUI('botui-app', { 'debug': true });
+
+  botui.message.add({
+    content: 'Tervetuloa Fintoon! Autamme sinua tutkimaan yhteisiä käsitteitämme. Mihin tarkoitukseen etsit tietoa?'
+  }).then(function () {
+    return botui.action.text({
+      action: {
+        placeholder: ''
+      }
+    });
+  }).then(function (res) {
+    botui.message.add({
+      content: 'You selected: ' + res.value
+    });
+  });
+</script>
+
+</html>
