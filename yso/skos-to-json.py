@@ -17,6 +17,8 @@ yso_cs = rdflib.URIRef('http://www.yso.fi/onto/yso/')
 for concept in g.subjects(SKOS.inScheme, yso_cs):
     if (concept, RDF.type, SKOS.Concept) not in g:
         continue
+    if (concept, OWL.deprecated, rdflib.Literal(True)) in g:
+        continue
     cdata = collections.defaultdict(list)
 
     # prefLabel
@@ -53,6 +55,9 @@ for concept in g.subjects(SKOS.inScheme, yso_cs):
 
 # collections
 for coll in g.subjects(RDF.type, SKOS.Collection):
+    if (coll, OWL.deprecated, rdflib.Literal(True)) in g:
+        continue
+
     cdata = collections.defaultdict(list)
 
     # prefLabel
