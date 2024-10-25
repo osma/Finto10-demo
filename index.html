@@ -121,7 +121,7 @@ body {
 
           <div id="main-carousel" class="carousel slide">
             <div class="carousel-inner">
-              <div class="carousel-item active">
+              <div id="tab-front" class="carousel-item active">
                 main content
 
                 <button id="startButton">Start Listening</button>
@@ -131,11 +131,11 @@ body {
                 <textarea id="resultDiv" style="display: inline-block;width:500px;height:100px"></textarea>
 
               </div>
-              <div class="carousel-item">
-
+              <div id="tab-vocab" class="carousel-item">
+                YSO vocab home
               </div>
-              <div class="carousel-item">
-
+              <div id="tab-concept" class="carousel-item">
+                concept
               </div>
             </div>
           </div>
@@ -279,8 +279,14 @@ body {
       }
     });
   }).then(function (res) {
+    carousel.to(1);
     botui.message.add({
-      content: 'You selected: ' + res.value
+      content: 'Tämä on Yleinen suomalais-saamelainen ontologia.'
+    });
+    return botui.action.text({
+      action: {
+        placeholder: ''
+      }
     });
   });
 
