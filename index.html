@@ -205,7 +205,16 @@ body {
         stopListening();
     });
 
-    function startListening() {
+    function startListening() {        
+        const textInputs = document.querySelectorAll('.botui-actions-text-input');
+        textInputs.forEach(input => {
+            input.addEventListener('keypress', function (event) {
+                if (event.key === 'Enter') {
+                    event.preventDefault(); // Prevent the default action (new line)
+                    document.querySelector('.botui-actions-text-submit').click(); // Submit the form
+                }
+            });
+        });
         
         audioConfig = SpeechSDK.AudioConfig.fromDefaultMicrophoneInput();
 
