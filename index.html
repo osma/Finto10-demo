@@ -139,7 +139,9 @@ body {
                 concept
               </div>
               <div id="tab-search" class="carousel-item">
-                search results
+                <h1 id="search-heading">Hakutulokset</h1>
+                <ul id="search-results">
+                </ul>
               </div>
             </div>
           </div>
@@ -264,6 +266,21 @@ body {
         document.getElementById('startButton').disabled = false;
         document.getElementById('stopButton').disabled = true;
     }
+
+function displaySearchResults(query, results) {
+    const heading = document.getElementById('search-heading');
+    heading.innerText = 'Hakutulokset: ' + query;
+
+    const ul = document.getElementById('search-results');
+    ul.innerHTML = '';
+
+    results.forEach(item => {
+        const li = document.createElement('li');
+        li.textContent = item.payload.label;
+        ul.appendChild(li);
+    });
+}
+
 </script>
 
 
@@ -298,8 +315,10 @@ botui.message.add({
     const embedding = await getEmbedding(res.value);
     const results = await searchNearbyVectors(embedding);
 
+    displaySearchResults(res.value, results);
+
     botui.message.add({
-        content: 'haku sanalla ' + res.value + ':' + results
+        content: 'Tässä hakutulokset hakusanalla ' + res.value + "."
     });
     return botui.action.text({
         action: {
