@@ -11,6 +11,7 @@
   <script src="node_modules/vue/dist/vue.min.js"></script>
   <script src="public/botui.js"></script>
   <script src="public/keys.js"></script>
+  <script src="public/embedding.js"></script>
   <script src="yso/yso.js"></script>
   <script src="https://aka.ms/csspeech/jsbrowserpackageraw"></script>
 <style>
@@ -266,60 +267,64 @@ body {
 </script>
 
 
-
 <script>
-  const carousel = new bootstrap.Carousel('#main-carousel');
-  carousel.pause();
 
-  const botui = new BotUI('botui-app', { 'debug': true });
+const TAB = { 'front': 0, 'vocab': 1, 'concept': 2, 'search': 3 };
+const carousel = new bootstrap.Carousel('#main-carousel');
+carousel.pause();
 
-  const TAB = { 'front': 0, 'vocab': 1, 'concept': 2, 'search': 3 };
+const botui = new BotUI('botui-app', { 'debug': true });
 
-  botui.message.add({
+botui.message.add({
     content: 'Tervetuloa Fintoon! Autamme sinua tutkimaan yhteisiä käsitteitämme. Mihin tarkoitukseen etsit tietoa?'
-  }).then(function () {
+}).then(function () {
     return botui.action.text({
-      action: {
-        placeholder: ''
-      }
+        action: {
+            placeholder: ''
+        }
     });
-  }).then(function (res) {
+}).then(function (res) {
     carousel.to(TAB.vocab);
     botui.message.add({
-      content: 'Tämä on Yleinen suomalais-saamelainen ontologia.'
+        content: 'Tämä on Yleinen suomalais-saamelainen ontologia.'
     });
     return botui.action.text({
-      action: {
-        placeholder: ''
-      }
+        action: {
+            placeholder: ''
+        }
     });
-  }).then(function (res) {
+}).then(async function (res) {
     carousel.to(TAB.search);
+    const embedding = await getEmbedding(res.value);
+    const results = await searchNearbyVectors(embedding);
+
     botui.message.add({
-      content: 'haku sanalla ' + res.value
+        content: 'haku sanalla ' + res.value + ':' + results
     });
     return botui.action.text({
-      action: {
-        placeholder: ''
-      }
+        action: {
+            placeholder: ''
+        }
     });
-  });
+});
 
-    // make sure botui textareas submit on enter keypress
-    setInterval(() => {
-        const textInputs = document.querySelectorAll('.botui-actions-text-input');
-        textInputs.forEach(input => {
-            if (!input.hasAttribute('data-enter-listener')) {
-                input.addEventListener('keypress', function (event) {
-                    if (event.key === 'Enter') {
-                        event.preventDefault(); // Prevent the default action (new line)
-                        document.querySelector('.botui-actions-text-submit').click(); // Submit the form
-                    }
-                });
-                input.setAttribute('data-enter-listener', 'true'); // Mark as having the listener
-            }
-        });
-    }, 100);
+// make sure botui textareas submit on enter keypress
+setInterval(() => {
+    const textInputs = document.querySelectorAll('.botui-actions-text-input');
+    textInputs.forEach(input => {
+        if (!input.hasAttribute('data-enter-listener')) {
+            input.addEventListener('keypress', function (event) {
+                if (event.key === 'Enter') {
+                    event.preventDefault(); // Prevent the default action (new line)
+                    document.querySelector('.botui-actions-text-submit').click(); // Submit the form
+                }
+            });
+            input.setAttribute('data-enter-listener', 'true'); // Mark as having the listener
+        }
+    });
+}, 100);
+
+
 
 </script>
 
