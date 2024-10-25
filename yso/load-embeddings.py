@@ -8,8 +8,8 @@ from qdrant_client import QdrantClient
 from qdrant_client.http.models import Distance, VectorParams
 
 
-COLLECTION_NAME = 'yso-test'
-BATCH_SIZE = 128
+COLLECTION_NAME = 'yso'
+BATCH_SIZE = 64
 
 
 client = QdrantClient(
