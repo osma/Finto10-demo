@@ -137,6 +137,9 @@ body {
               <div id="tab-concept" class="carousel-item">
                 concept
               </div>
+              <div id="tab-search" class="carousel-item">
+                search results
+              </div>
             </div>
           </div>
 
@@ -270,6 +273,8 @@ body {
 
   const botui = new BotUI('botui-app', { 'debug': true });
 
+  const TAB = { 'front': 0, 'vocab': 1, 'concept': 2, 'search': 3 };
+
   botui.message.add({
     content: 'Tervetuloa Fintoon! Autamme sinua tutkimaan yhteisiä käsitteitämme. Mihin tarkoitukseen etsit tietoa?'
   }).then(function () {
@@ -279,9 +284,19 @@ body {
       }
     });
   }).then(function (res) {
-    carousel.to(1);
+    carousel.to(TAB.vocab);
     botui.message.add({
       content: 'Tämä on Yleinen suomalais-saamelainen ontologia.'
+    });
+    return botui.action.text({
+      action: {
+        placeholder: ''
+      }
+    });
+  }).then(function (res) {
+    carousel.to(TAB.search);
+    botui.message.add({
+      content: 'haku sanalla ' + res.value
     });
     return botui.action.text({
       action: {
