@@ -117,13 +117,27 @@ body {
       </div>
       <div class="col-9 height-full p-0 d-flex" id="main-col">
         <div id="main" class="me-3 my-4 p-4">
-          main content
 
-          <button id="startButton">Start Listening</button>
-          <button id="stopButton" disabled>Stop Listening</button>
+          <div id="main-carousel" class="carousel slide">
+            <div class="carousel-inner">
+              <div class="carousel-item active">
+                main content
 
-          <button id="startSpeakTextAsyncButton">Start Text to Speech</button>
-          <textarea id="resultDiv" style="display: inline-block;width:500px;height:100px"></textarea>
+                <button id="startButton">Start Listening</button>
+                <button id="stopButton" disabled>Stop Listening</button>
+
+                <button id="startSpeakTextAsyncButton">Start Text to Speech</button>
+                <textarea id="resultDiv" style="display: inline-block;width:500px;height:100px"></textarea>
+
+              </div>
+              <div class="carousel-item">
+
+              </div>
+              <div class="carousel-item">
+
+              </div>
+            </div>
+          </div>
 
         </div>
       </div>
@@ -251,7 +265,10 @@ body {
 
 
 <script>
-  var botui = new BotUI('botui-app', { 'debug': true });
+  const carousel = new bootstrap.Carousel('#main-carousel');
+  carousel.pause();
+
+  const botui = new BotUI('botui-app', { 'debug': true });
 
   botui.message.add({
     content: 'Tervetuloa Fintoon! Autamme sinua tutkimaan yhteisiä käsitteitämme. Mihin tarkoitukseen etsit tietoa?'
