@@ -28,6 +28,12 @@ body {
   color: #ecd063;
 }
 
+h1 {
+  font-size: 30px;
+  font-weight: bold;
+  color: #b5d294;
+}
+
 .height-full { height: 100vh; }
 
 #container {
@@ -46,6 +52,10 @@ body {
   flex-grow: 1;
   filter: blur(0);
   box-shadow: 0 0 30px rgba(0, 0, 0, 1.0);
+}
+
+#tab-vocab img {
+  width: 16em;
 }
 
 #botui-row {
@@ -123,7 +133,7 @@ body {
           <div id="main-carousel" class="carousel slide">
             <div class="carousel-inner">
               <div id="tab-front" class="carousel-item active">
-                main content
+                <h1>Finto: Yhteiset käsitteet kuvailuun ja analyysiin</h1>
 
                 <button id="startButton">Start Listening</button>
                 <button id="stopButton" disabled>Stop Listening</button>
@@ -133,7 +143,16 @@ body {
 
               </div>
               <div id="tab-vocab" class="carousel-item">
-                YSO vocab home
+                <img src="public/images/yso.png" class="float-end ms-4">
+                <h1>YSO: Yhteinen suomalais-saamelainen olemusto</h1>
+
+                <p>Yhteinen suomalais-saamelainen olemusto YSO on viisikielinen,
+                etupäässä yleiskäsitteistä koostuva käsitekokoelma.  YSO on
+                rakennettu suomalais-saamelaisen kulttuuripiirin
+                sisällönkuvailutarpeiden ja käsitteistön pohjalta, ja se on
+                tarkoitettu käytettäväksi kuvailuun erityisesti silloin, kun
+                kuvailtavien aineistojen aihealueet ovat monipuolisia.</p>
+
               </div>
               <div id="tab-concept" class="carousel-item">
                 concept
