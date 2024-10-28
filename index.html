@@ -300,6 +300,12 @@ function displaySearchResults(query, results) {
     });
 }
 
+function setEnergy(value) {
+    const meter = document.getElementById('meter');
+    meter.value = value;
+}
+
+
 </script>
 
 
@@ -311,34 +317,41 @@ carousel.pause();
 
 const botui = new BotUI('botui-app', { 'debug': true });
 
+setEnergy(20);
 botui.message.add({
     content: 'Tervetuloa Fintoon! Autamme sinua tutkimaan yhteisiä käsitteitämme. Mihin tarkoitukseen etsit tietoa?'
 }).then(function () {
+    setEnergy(50);
     return botui.action.text({
         action: {
             placeholder: ''
         }
     });
 }).then(function (res) {
+    setEnergy(20);
     carousel.to(TAB.vocab);
     botui.message.add({
         content: 'Tämä on Yleinen suomalais-saamelainen ontologia.'
     });
+    setEnergy(50);
     return botui.action.text({
         action: {
             placeholder: ''
         }
     });
 }).then(async function (res) {
+    setEnergy(80);
     carousel.to(TAB.search);
     const embedding = await getEmbedding(res.value);
     const results = await searchNearbyVectors(embedding);
 
     displaySearchResults(res.value, results);
+    setEnergy(20);
 
     botui.message.add({
         content: 'Tässä hakutulokset hakusanalla ' + res.value + "."
     });
+    setEnergy(50);
     return botui.action.text({
         action: {
             placeholder: ''
