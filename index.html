@@ -300,9 +300,30 @@ function displaySearchResults(query, results) {
     });
 }
 
-function setEnergy(value) {
-    const meter = document.getElementById('meter');
-    meter.value = value;
+function setEnergy(newValue) {
+  const meter = document.getElementById('meter');
+  const currentValue = parseFloat(meter.value);
+  const diff = newValue - currentValue;
+  const duration = Math.abs(diff) * 10; // Duration in milliseconds
+
+  let startTime = performance.now();
+  let elapsedTime = 0;
+
+  function animate(timestamp) {
+    elapsedTime = timestamp - startTime;
+    const progress = Math.min(elapsedTime / duration, 1);
+    const animatedValue = currentValue + (newValue - currentValue) * progress;
+
+    meter.value = animatedValue.toFixed(2);
+
+    if (elapsedTime < duration) {
+      requestAnimationFrame(animate);
+    } else {
+      meter.value = newValue.toFixed(2);
+    }
+  }
+
+  requestAnimationFrame(animate);
 }
 
 
