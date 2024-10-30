@@ -7,7 +7,7 @@ async function chatLLM(prompt) {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                model: deploymentName,
+                model: chatModel,
                 messages: [{ role: 'user', content: prompt }],
                 max_tokens: 150,
                 temperature: 0.7,
@@ -20,7 +20,8 @@ async function chatLLM(prompt) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
 
-        return response.json();
+        const data = await response.json();
+        return data.choices[0].message.content;
     } catch (error) {
         console.error('There was a problem with the Azure OpenAI API call:', error);
         alert('An error occurred while processing your request.');
@@ -71,5 +72,20 @@ Now classify the following input:
 async function parseIntent(input) {
     const prompt = INTENT_PROMPT + input;
     const response = await chatLLM(prompt);
-    return response;
+    console.log(response);
+
+    if (!response.includes(":")) {
+        // If there's no colon, return an object with only the action
+        return {
+            action: response.trim()
+        };
+    } else {
+        // If there's a colon, proceed with the original logic
+        const [action, keyword] = response.split(':');
+
+        return {
+            action: action.trim(),
+            keyword: keyword.trim()
+        };
+    }
 }

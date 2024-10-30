@@ -12,6 +12,7 @@
   <script src="public/botui.js"></script>
   <script src="public/keys.js"></script>
   <script src="public/embedding.js"></script>
+  <script src="public/llm.js"></script>
   <script src="yso/yso.js"></script>
   <script src="https://aka.ms/csspeech/jsbrowserpackageraw"></script>
 <style>
@@ -314,12 +315,14 @@ function setEnergy(newValue) {
     const progress = Math.min(elapsedTime / duration, 1);
     const animatedValue = currentValue + (newValue - currentValue) * progress;
 
-    meter.value = animatedValue.toFixed(2);
+    if (!isNaN(animatedValue)) {
+        meter.value = animatedValue;
+    }
 
     if (elapsedTime < duration) {
-      requestAnimationFrame(animate);
+        requestAnimationFrame(animate);
     } else {
-      meter.value = newValue.toFixed(2);
+        meter.value = newValue;
     }
   }
 
@@ -338,47 +341,65 @@ carousel.pause();
 
 const botui = new BotUI('botui-app', { 'debug': true });
 
-setEnergy(20);
-botui.message.add({
-    content: 'Tervetuloa Fintoon! Autamme sinua tutkimaan yhteisiä käsitteitämme. Mihin tarkoitukseen etsit tietoa?'
-}).then(function () {
+async function chooseAction(res) {
+    const intent = await parseIntent(res.value);
+    console.log(intent);
+    if (intent.action == "search") {
+        return search(intent.keyword);
+    } else if (intent.action == "home") {
+        return vocab();
+    }
+}
+
+function waitForAction() {
     setEnergy(50);
     return botui.action.text({
         action: {
             placeholder: ''
         }
+    }).then(chooseAction);
+}
+
+async function search(keyword) {
+    setEnergy(80);
+    carousel.to(TAB.search);
+    const embedding = await getEmbedding(keyword);
+    const results = await searchNearbyVectors(embedding);
+
+    displaySearchResults(keyword, results);
+    setEnergy(20);
+
+    botui.message.add({
+        content: 'Tässä hakutulokset hakusanalla ' + keyword + "."
     });
-}).then(function (res) {
+    waitForAction();
+}
+
+function vocab() {
     setEnergy(20);
     carousel.to(TAB.vocab);
     botui.message.add({
         content: 'Tämä on Yleinen suomalais-saamelainen ontologia.'
     });
-    setEnergy(50);
-    return botui.action.text({
-        action: {
-            placeholder: ''
-        }
-    });
-}).then(async function (res) {
-    setEnergy(80);
-    carousel.to(TAB.search);
-    const embedding = await getEmbedding(res.value);
-    const results = await searchNearbyVectors(embedding);
+    waitForAction();
+}
 
-    displaySearchResults(res.value, results);
+function home() {
     setEnergy(20);
-
     botui.message.add({
-        content: 'Tässä hakutulokset hakusanalla ' + res.value + "."
-    });
-    setEnergy(50);
-    return botui.action.text({
-        action: {
-            placeholder: ''
-        }
-    });
-});
+        content: 'Tervetuloa Fintoon! Autamme sinua tutkimaan yhteisiä käsitteitämme. Mihin tarkoitukseen etsit tietoa?'
+    }).then(function () {
+        setEnergy(50);
+        return botui.action.text({
+            action: {
+                placeholder: ''
+            }
+        });
+    }).then(vocab);
+}
+
+home();
+
 
 // make sure botui textareas submit on enter keypress
 setInterval(() => {
