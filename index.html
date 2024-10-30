@@ -151,12 +151,6 @@ h1 {
               <div id="tab-front" class="carousel-item active">
                 <h1>Finto: Yhteiset käsitteet kuvailuun ja analyysiin</h1>
 
-                <button id="startButton">Start Listening</button>
-                <button id="stopButton" disabled>Stop Listening</button>
-
-                <button id="startSpeakTextAsyncButton">Start Text to Speech</button>
-                <textarea id="resultDiv" style="display: inline-block;width:500px;height:100px"></textarea>
-
               </div>
               <div id="tab-vocab" class="carousel-item">
                 <img src="public/images/yso.png" class="float-end ms-4">
@@ -203,33 +197,24 @@ h1 {
     speechConfig.speechSynthesisVoiceName = "fi-FI-SelmaNeural";
     speechConfig.speechSynthesisLanguage = "fi-FI";
 
-    startSpeakTextAsyncButton = document.getElementById("startSpeakTextAsyncButton");
-    startSpeakTextAsyncButton.addEventListener("click", function () {
-        startSpeakTextAsyncButton.disabled = true;
+    micIcon = document.getElementById("mic-icon");
+    micIcon.addEventListener("click", function () {
         speakText('Tervetuloa Fintoon! Autamme sinua tutkimaan yhteisiä käsitteitämme. Mihin tarkoitukseen etsit tietoa?');
+        startListening();
     });
 
     function speakText(inputText) {
         synthesizer = new SpeechSDK.SpeechSynthesizer(speechConfig);
-        resultDiv = document.getElementById("resultDiv");
 
         synthesizer.speakTextAsync(
           inputText,
           function (result) {
-            if (result.reason === SpeechSDK.ResultReason.SynthesizingAudioCompleted) {
-              resultDiv.innerHTML += "synthesis finished for [" + inputText + "].\n";
-            } else if (result.reason === SpeechSDK.ResultReason.Canceled) {
-              resultDiv.innerHTML += "synthesis failed. Error detail: " + result.errorDetails + "\n";
-            }
             window.console.log(result);
             synthesizer.close();
             synthesizer = undefined;
           },
           function (err) {
             startSpeakTextAsyncButton.disabled = false;
-            resultDiv.innerHTML += "Error: ";
-            resultDiv.innerHTML += err;
-            resultDiv.innerHTML += "\n";
             window.console.log(err);
 
             synthesizer.close();
@@ -237,14 +222,6 @@ h1 {
         });        
     }
 
-
-    document.getElementById('startButton').addEventListener('click', function () {
-        startListening();
-    });
-
-    document.getElementById('stopButton').addEventListener('click', function () {
-        stopListening();
-    });
 
     function startListening() {
         audioConfig = SpeechSDK.AudioConfig.fromDefaultMicrophoneInput();
@@ -285,10 +262,9 @@ h1 {
             stopListening();
         };
 
+        const micIcon = document.getElementById("mic-icon");
+        micIcon.src = "public/images/mic2.svg";
         recognizer.startContinuousRecognitionAsync();
-
-        document.getElementById('startButton').disabled = true;
-        document.getElementById('stopButton').disabled = false;
     }
 
     function stopListening() {
@@ -297,9 +273,8 @@ h1 {
             recognizer = undefined;
             
         });
-
-        document.getElementById('startButton').disabled = false;
-        document.getElementById('stopButton').disabled = true;
+        const micIcon = document.getElementById("mic-icon");
+        micIcon.src = "public/images/mic.svg";
     }
 
 function displaySearchResults(query, results) {
