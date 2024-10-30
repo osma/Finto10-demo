@@ -252,15 +252,19 @@ function displayConcept(uri, label) {
         hideElem(altlabelRow);
     }
 
-    // preflabels in other langs
+    // labels in other langs
     const langs = ["sv", "se", "et", "en", "zh"];
     for (var i = 0; i < langs.length; ++i) {
         const lang = langs[i];
-        const row = document.getElementById(lang + 'label-row');
-        if (cdata['label_' + lang]) {
+        const row = document.getElementById(`${lang}label-row`);
+        if (cdata[`label_${lang}`]) {
             showElem(row);
-            const labelElem = document.getElementById(lang + 'label');
-            labelElem.innerText = cdata['label_' + lang];
+            const labelElem = document.getElementById(`${lang}label`);
+            var label = cdata[`label_${lang}`];
+            if (cdata[`altlabel_${lang}`]) {
+                label += "; " + cdata[`altlabel_${lang}`].join(', ');
+            }
+            labelElem.innerText = label;
         } else {
             hideElem(row);
         }
