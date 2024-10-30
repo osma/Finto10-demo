@@ -219,7 +219,7 @@ async function chooseAction(res) {
         return search(intent.keyword);
     } else if (intent.action == "home") {
         return vocab();
-    } else if (intent.action == "unknown") {
+    } else {
         return unknown();
     }
 }
@@ -233,10 +233,16 @@ function waitForAction() {
     }).then(chooseAction);
 }
 
-function unknown() {
+function say(text) {
+    speakText(text);
     botui.message.add({
-        content: 'En ymmärtänyt pyyntöä. Voit pyytää näyttämään käsitteen, hakea hakusanalla tai ehdottaa uutta käsitettä.'
+        content: text
     });
+    startListening();
+}
+
+function unknown() {
+    say('En ymmärtänyt pyyntöä. Voit pyytää näyttämään käsitteen, hakea hakusanalla tai ehdottaa uutta käsitettä.');
     waitForAction();
 }
 
@@ -259,23 +265,16 @@ async function search(keyword) {
 function vocab() {
     setEnergy(20);
     carousel.to(TAB.vocab);
-    botui.message.add({
-        content: 'Tämä on Yleinen suomalais-saamelainen ontologia.'
-    });
+    say('Tämä on Yleinen suomalais-saamelainen ontologia.');
     waitForAction();
 }
 
 function home() {
     setEnergy(20);
-    botui.message.add({
-        content: 'Tervetuloa Fintoon! Autamme sinua tutkimaan yhteisiä käsitteitämme. Mihin tarkoitukseen etsit tietoa?'
-    }).then(function () {
-        setEnergy(50);
-        return botui.action.text({
-            action: {
-                placeholder: ''
-            }
-        });
+    return botui.action.text({
+        action: {
+            placeholder: ''
+        }
     }).then(vocab);
 }
 
@@ -283,8 +282,7 @@ home();
 
 micIcon = document.getElementById("mic-icon");
 micIcon.addEventListener("click", function () {
-    speakText('Tervetuloa Fintoon! Autamme sinua tutkimaan yhteisiä käsitteitämme. Mihin tarkoitukseen etsit tietoa?');
-    startListening();
+    say('Tervetuloa Fintoon! Autamme sinua tutkimaan yhteisiä käsitteitämme. Mihin tarkoitukseen etsit tietoa?');
 });
 
 
