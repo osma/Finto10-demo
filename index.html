@@ -168,7 +168,33 @@ h1 {
               </div>
               <div id="tab-concept" class="carousel-item">
                 <h1 id="concept-label">concept label</h1>
+
+                <div class="row" id="altlabel-row">
+                  <div class="col-2">myös:</div>
+                  <div class="col-10" id="altlabel"></div>
+                </div>
+                <div class="row" id="svlabel-row">
+                  <div class="col-2">ruotsiksi:</div>
+                  <div class="col-10" id="svlabel"></div>
+                </div>
+                <div class="row" id="selabel-row">
+                  <div class="col-2">pohjoissaameksi:</div>
+                  <div class="col-10" id="selabel"></div>
+                </div>
+                <div class="row" id="etlabel-row">
+                  <div class="col-2">viroksi:</div>
+                  <div class="col-10" id="etlabel"></div>
+                </div>
+                <div class="row" id="enlabel-row">
+                  <div class="col-2">englanniksi:</div>
+                  <div class="col-10" id="enlabel"></div>
+                </div>
+                <div class="row" id="zhlabel-row">
+                  <div class="col-2">kiinaksi:</div>
+                  <div class="col-10" id="zhlabel"></div>
+                </div>
               </div>
+
               <div id="tab-search" class="carousel-item">
                 <h1 id="search-heading">Hakutulokset</h1>
                 <ul id="search-results">
@@ -202,9 +228,43 @@ function displaySearchResults(query, results) {
     });
 }
 
+function showElem(elem) {
+    elem.classList.remove('visually-hidden');
+}
+
+function hideElem(elem) {
+    elem.classList.add('visually-hidden');
+}
+
 function displayConcept(uri, label) {
+    cdata = yso[uri];
+
     const heading = document.getElementById('concept-label');
     heading.innerText = label;
+
+    // altlabel
+    const altlabelRow = document.getElementById('altlabel-row');
+    if (cdata.altlabel_fi) {
+        showElem(altlabelRow);
+        const altlabelElem = document.getElementById('altlabel');
+        altlabelElem.innerText = cdata.altlabel_fi.join(', ');
+    } else {
+        hideElem(altlabelRow);
+    }
+
+    // preflabels in other langs
+    const langs = ["sv", "se", "et", "en", "zh"];
+    for (var i = 0; i < langs.length; ++i) {
+        const lang = langs[i];
+        const row = document.getElementById(lang + 'label-row');
+        if (cdata['label_' + lang]) {
+            showElem(row);
+            const labelElem = document.getElementById(lang + 'label');
+            labelElem.innerText = cdata['label_' + lang];
+        } else {
+            hideElem(row);
+        }
+    }
 }
 
 </script>
