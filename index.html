@@ -9,13 +9,14 @@
   <link rel="stylesheet" href="public/botui-theme-default.css">
   <script src="node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
   <script src="node_modules/vue/dist/vue.min.js"></script>
+  <script src="https://aka.ms/csspeech/jsbrowserpackageraw"></script>
   <script src="public/botui.js"></script>
   <script src="public/energy.js"></script>
   <script src="public/keys.js"></script>
+  <script src="public/speech.js"></script>
   <script src="public/embedding.js"></script>
   <script src="public/llm.js"></script>
   <script src="yso/yso.js"></script>
-  <script src="https://aka.ms/csspeech/jsbrowserpackageraw"></script>
 <style>
 @font-face {
   font-family: 'Oxanium';
@@ -185,97 +186,6 @@ h1 {
 </body>
 
 <script>
-    let audioConfig;
-    let speechConfig;
-    let recognizer;
-    let synthesizer;
-
-    speechConfig = SpeechSDK.SpeechConfig.fromSubscription(subscriptionKey, serviceRegion);
-    // Set the speech recognition language to Finnish
-    speechConfig.speechRecognitionLanguage = "fi-FI";
-    // Set the text-to-speech voice and language
-    speechConfig.speechSynthesisVoiceName = "fi-FI-SelmaNeural";
-    speechConfig.speechSynthesisLanguage = "fi-FI";
-
-    micIcon = document.getElementById("mic-icon");
-    micIcon.addEventListener("click", function () {
-        speakText('Tervetuloa Fintoon! Autamme sinua tutkimaan yhteisiä käsitteitämme. Mihin tarkoitukseen etsit tietoa?');
-        startListening();
-    });
-
-    function speakText(inputText) {
-        synthesizer = new SpeechSDK.SpeechSynthesizer(speechConfig);
-
-        synthesizer.speakTextAsync(
-          inputText,
-          function (result) {
-            window.console.log(result);
-            synthesizer.close();
-            synthesizer = undefined;
-          },
-          function (err) {
-            startSpeakTextAsyncButton.disabled = false;
-            window.console.log(err);
-
-            synthesizer.close();
-            synthesizer = undefined;
-        });        
-    }
-
-
-    function startListening() {
-        audioConfig = SpeechSDK.AudioConfig.fromDefaultMicrophoneInput();
-
-        recognizer = new SpeechSDK.SpeechRecognizer(speechConfig, audioConfig);
-
-        // Create a phrase list and add specific words
-        const phraseList = SpeechSDK.PhraseListGrammar.fromRecognizer(recognizer);
-        phraseList.addPhrase("Finto");
-        phraseList.addPhrase("Finto AI");
-        phraseList.addPhrase("YSO");
-
-        recognizer.recognizing = function (s, e) {
-            // transient change - modify the textarea directly, not through Vue
-            document.querySelector('.botui-actions-text-input').value = e.result.text;
-        };
-
-        recognizer.recognized = function (s, e) {
-            if (e.result.reason === SpeechSDK.ResultReason.RecognizedSpeech) {
-                // change the content of the textarea through Vue
-                window.botInstance.action.text.value = e.result.text;
-                document.querySelector('.botui-actions-text-submit').click();
-            } else if (e.result.reason === SpeechSDK.ResultReason.NoMatch) {
-                window.botInstance.action.text.value = '';
-            }
-        };
-
-        recognizer.canceled = function (s, e) {
-            console.error(`Canceled: ${e.reason}`);
-            if (e.reason === SpeechSDK.CancellationReason.Error) {
-                console.error(`Error details: ${e.errorDetails}`);
-            }
-            stopListening();
-        };
-
-        recognizer.sessionStopped = function (s, e) {
-            console.log("Session stopped.");
-            stopListening();
-        };
-
-        const micIcon = document.getElementById("mic-icon");
-        micIcon.src = "public/images/mic2.svg";
-        recognizer.startContinuousRecognitionAsync();
-    }
-
-    function stopListening() {
-        recognizer.stopContinuousRecognitionAsync(() => {
-            recognizer.close();
-            recognizer = undefined;
-            
-        });
-        const micIcon = document.getElementById("mic-icon");
-        micIcon.src = "public/images/mic.svg";
-    }
 
 function displaySearchResults(query, results) {
     const heading = document.getElementById('search-heading');
@@ -360,6 +270,13 @@ function home() {
 }
 
 home();
+
+micIcon = document.getElementById("mic-icon");
+micIcon.addEventListener("click", function () {
+    speakText('Tervetuloa Fintoon! Autamme sinua tutkimaan yhteisiä käsitteitämme. Mihin tarkoitukseen etsit tietoa?');
+    startListening();
+});
+
 
 
 // make sure botui textareas submit on enter keypress
