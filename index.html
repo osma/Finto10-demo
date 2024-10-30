@@ -10,6 +10,7 @@
   <script src="node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
   <script src="node_modules/vue/dist/vue.min.js"></script>
   <script src="public/botui.js"></script>
+  <script src="public/energy.js"></script>
   <script src="public/keys.js"></script>
   <script src="public/embedding.js"></script>
   <script src="public/llm.js"></script>
@@ -300,35 +301,6 @@ function displaySearchResults(query, results) {
         ul.appendChild(li);
     });
 }
-
-function setEnergy(newValue) {
-  const meter = document.getElementById('meter');
-  const currentValue = parseFloat(meter.value);
-  const diff = newValue - currentValue;
-  const duration = Math.abs(diff) * 10; // Duration in milliseconds
-
-  let startTime = performance.now();
-  let elapsedTime = 0;
-
-  function animate(timestamp) {
-    elapsedTime = timestamp - startTime;
-    const progress = Math.min(elapsedTime / duration, 1);
-    const animatedValue = currentValue + (newValue - currentValue) * progress;
-
-    if (!isNaN(animatedValue)) {
-        meter.value = animatedValue;
-    }
-
-    if (elapsedTime < duration) {
-        requestAnimationFrame(animate);
-    } else {
-        meter.value = newValue;
-    }
-  }
-
-  requestAnimationFrame(animate);
-}
-
 
 </script>
 
