@@ -74,7 +74,7 @@ h1 {
 }
 
 #energy-row .row {
-  font-size: 14px;
+  font-size: 15px;
 }
 
 #energy-avail {
@@ -85,6 +85,7 @@ h1 {
   border-radius: 3px;
   font-weight: bold;
   font-size: 12px;
+  width: 80%;
 }
 
 #meter {
@@ -103,10 +104,10 @@ h1 {
 }
 
 #version {
-  font-size: 12px;
+  font-size: 14px;
   position: absolute;
-  bottom: 0.2em;
-  left: 1.5em;
+  bottom: 0.12em;
+  left: 1em;
 }
 
 </style>
@@ -166,7 +167,7 @@ h1 {
 
               </div>
               <div id="tab-concept" class="carousel-item">
-                concept
+                <h1 id="concept-label">concept label</h1>
               </div>
               <div id="tab-search" class="carousel-item">
                 <h1 id="search-heading">Hakutulokset</h1>
@@ -181,7 +182,7 @@ h1 {
     </div>
   </div>
 
-<div id="version">SkosmosisNG-8.2.1</div>
+<div id="version">SkosmosisNG-8.2.1-20491101</div>
 
 </body>
 
@@ -201,6 +202,11 @@ function displaySearchResults(query, results) {
     });
 }
 
+function displayConcept(uri, label) {
+    const heading = document.getElementById('concept-label');
+    heading.innerText = label;
+}
+
 </script>
 
 
@@ -217,6 +223,8 @@ async function chooseAction(res) {
     console.log(intent);
     if (intent.action == "search") {
         return search(intent.keyword);
+    } else if (intent.action == "show") {
+        return show(intent.keyword);
     } else if (intent.action == "home") {
         return vocab();
     } else {
@@ -244,6 +252,20 @@ function say(text) {
 
 function unknown() {
     say('En ymmärtänyt pyyntöä. Voit pyytää näyttämään käsitteen, hakea hakusanalla tai ehdottaa uutta käsitettä.');
+    waitForAction();
+}
+
+async function show(keyword) {
+    setEnergy(80);
+    carousel.to(TAB.concept);
+    const embedding = await getEmbedding(keyword);
+    const results = await searchNearbyVectors(embedding);
+    const uri = results[0].payload.uri;
+    const label = yso[uri].label_fi
+
+    displayConcept(uri, label);
+
+    say(`Tässä käsite ${label}`);
     waitForAction();
 }
 
@@ -281,7 +303,8 @@ home();
 
 micIcon = document.getElementById("mic-icon");
 micIcon.addEventListener("click", function () {
-    say('Tervetuloa Fintoon! Autamme sinua tutkimaan yhteisiä käsitteitämme. Mihin tarkoitukseen etsit tietoa?');
+    //say('Tervetuloa Fintoon! Autamme sinua tutkimaan yhteisiä käsitteitämme. Mihin tarkoitukseen etsit tietoa?');
+    say('Tervetuloa Fintoon!');
 });
 
 
