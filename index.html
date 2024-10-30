@@ -219,6 +219,8 @@ async function chooseAction(res) {
         return search(intent.keyword);
     } else if (intent.action == "home") {
         return vocab();
+    } else if (intent.action == "unknown") {
+        return unknown();
     }
 }
 
@@ -230,6 +232,14 @@ function waitForAction() {
         }
     }).then(chooseAction);
 }
+
+function unknown() {
+    botui.message.add({
+        content: 'En ymmärtänyt pyyntöä. Voit pyytää näyttämään käsitteen, hakea hakusanalla tai ehdottaa uutta käsitettä.'
+    });
+    waitForAction();
+}
+
 
 async function search(keyword) {
     setEnergy(80);
