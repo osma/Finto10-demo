@@ -46,6 +46,7 @@ function startListening() {
     };
 
     recognizer.recognized = function (s, e) {
+        stopListening();
         if (e.result.reason === SpeechSDK.ResultReason.RecognizedSpeech) {
             // change the content of the textarea through Vue
             window.botInstance.action.text.value = e.result.text;

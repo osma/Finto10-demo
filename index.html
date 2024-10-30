@@ -238,7 +238,8 @@ function say(text) {
     botui.message.add({
         content: text
     });
-    startListening();
+    // start listening after the speaking is completed (approximately)
+    setTimeout(startListening, text.length * 90);
 }
 
 function unknown() {
@@ -256,16 +257,14 @@ async function search(keyword) {
     displaySearchResults(keyword, results);
     setEnergy(20);
 
-    botui.message.add({
-        content: 'Tässä hakutulokset hakusanalla ' + keyword + "."
-    });
+    say('Tässä hakutulokset hakusanalla ' + keyword + ".");
     waitForAction();
 }
 
 function vocab() {
     setEnergy(20);
     carousel.to(TAB.vocab);
-    say('Tämä on Yleinen suomalais-saamelainen ontologia.');
+    say('Tämä on Yhteinen suomalais-saamelainen olemusto.');
     waitForAction();
 }
 
