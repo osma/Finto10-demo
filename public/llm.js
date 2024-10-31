@@ -28,13 +28,15 @@ async function chatLLM(prompt) {
     }
 }
 
-const INTENT_PROMPT = `Your task is to classify the user intent into categories and for some categories, extract the relevant keyword, with the category and keyword separated by a colon. The user input is usually in Finnish. The categories are show, search, suggest, home and unknown. You should respond only with the string category:keyword, no explanations.
+const INTENT_PROMPT = `Your task is to classify the user intent into categories and for some categories, extract the relevant keyword, with the category and keyword separated by a colon. The user input is usually in Finnish. The categories are show, search, home and unknown. You should respond only with the string category:keyword, no explanations.
 
 Example input for the show category:
 - näytä käsite ilmastonmuutos
 - näytä ilmastonmuutos
 - avaa ilmastonmuutos
 - onko ilmastonmuutos sanastossa
+- löytyykö sanastosta ilmastonmuutosta
+- löytyykö ilmastonmuutosta
 
 Output for these inputs should be:
 show:ilmastonmuutos
@@ -46,14 +48,6 @@ Example input for the search category:
 
 Output for these inputs should be:
 search:aasialaiset kulttuurit
-
-Example input for the suggest category:
-- ehdotan uutta käsitettä perustulo
-- ehdotan käsitettä perustulo
-- ehdotan että lisätään perustulo
-
-Output for these inputs should be:
-suggest:perustulo
 
 Example input for the home category:
 - mene etusivulle
