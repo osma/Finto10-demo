@@ -428,7 +428,9 @@ function displayConcept(uri) {
     }
 
     // QR code
-    new QRCode(document.getElementById("qrcode"), {
+    const qrElem = document.getElementById("qrcode");
+    qrElem.innerHTML = '';
+    new QRCode(qrElem, {
       text: uri,
       colorLight: "#b5d294",
       colorDark: "#0b151c"
