@@ -28,7 +28,7 @@ async function getEmbedding(text) {
 }
 
 
-async function searchNearbyVectors(embeddingVector, limit = 5) {
+async function searchNearbyVectors(embeddingVector, limit = 20) {
   try {
     const response = await fetch(qdrantEndpoint + '/collections/' + collectionName + '/points/search', {
       method: 'POST',

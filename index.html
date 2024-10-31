@@ -135,8 +135,11 @@ h1 {
 }
 
 #meter {
-  background: #1e3a3e;
   width: 95%;
+}
+
+meter {
+  background: #1e3a3e;
 }
 
 #meter:-moz-meter-optimum::-moz-meter-bar {
@@ -192,16 +195,21 @@ h1, #tab-front .row, #tab-concept .row {
   height: 150px;
 }
 
-#tab-front ul {
+#tab-front ul, #search-results {
   padding: 0;
   margin: 0;
 }
 
-#tab-front li {
+#tab-front li, #search-results li {
   list-style-type: none;
   color: #b5d294;
   font-weight: bold;
 }
+
+#search-results meter {
+  margin-right: 18px;
+}
+
 
 </style>
   
@@ -422,7 +430,12 @@ function displaySearchResults(query, results) {
 
     results.forEach(item => {
         const li = document.createElement('li');
-        li.textContent = item.payload.label;
+        const meter = document.createElement('meter');
+        meter.value = item.score;
+        const span = document.createElement('span');
+        span.textContent = item.payload.label;
+        li.appendChild(meter);
+        li.appendChild(span);
         ul.appendChild(li);
     });
 }
