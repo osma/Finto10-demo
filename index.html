@@ -72,7 +72,8 @@ h1 {
 }
 
 #tab-vocab img {
-  width: 200px;
+  width: 180px;
+  margin: 10px;
 }
 
 #botui-row {
@@ -562,12 +563,14 @@ function waitForAction() {
 }
 
 function say(text) {
+    setEnergy(50);
     speakText(text);
     botui.message.add({
         content: text
     });
     // start listening after the speaking is completed (approximately)
     setTimeout(startListening, text.length * 90);
+    setTimeout(function() { setEnergy(10); }, text.length * 90);
 }
 
 function unknown() {
@@ -591,27 +594,27 @@ async function show(keyword) {
 
 
 async function search(keyword) {
-    setEnergy(80);
+    setEnergy(30);
     carousel.to(TAB.search);
     const embedding = await getEmbedding(keyword);
     const results = await searchNearbyVectors(embedding);
 
     displaySearchResults(keyword, results);
-    setEnergy(20);
+    setEnergy(10);
 
     say('Tässä hakutulokset hakusanalla ' + keyword + ".");
     waitForAction();
 }
 
 function vocab() {
-    setEnergy(20);
+    setEnergy(10);
     carousel.to(TAB.vocab);
     say('Tämä on Yhteinen suomalais-saamelainen olemusto.');
     waitForAction();
 }
 
 function home() {
-    setEnergy(20);
+    setEnergy(10);
     return botui.action.text({
         action: {
             placeholder: ''
