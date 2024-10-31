@@ -626,7 +626,7 @@ async function search(keyword) {
 function vocab() {
     setEnergy(10);
     carousel.to(TAB.vocab);
-    say('Tämä on Yhteinen suomalais-saamelainen olemusto.');
+    say('Esineiden kuvailuun sopii parhaiten Yhteinen suomalais-saamelainen olemusto. Mitä tietoa etsit?');
     waitForAction();
 }
 
@@ -643,8 +643,8 @@ home();
 
 micIcon = document.getElementById("mic-icon");
 micIcon.addEventListener("click", function () {
-    //say('Tervetuloa Fintoon! Autamme sinua tutkimaan yhteisiä käsitteitämme. Mihin tarkoitukseen etsit tietoa?');
-    say('Tervetuloa Fintoon!');
+    say('Tervetuloa Fintoon! Autamme sinua tutkimaan yhteisiä käsitteitämme. Mihin tarkoitukseen etsit tietoa?');
+    //say('Tervetuloa Fintoon!');
 });
 
 
