@@ -11,6 +11,7 @@
   <script src="node_modules/vue/dist/vue.min.js"></script>
   <script src="https://aka.ms/csspeech/jsbrowserpackageraw"></script>
   <script src="public/botui.js"></script>
+  <script src="public/qrcode.min.js"></script>
   <script src="public/energy.js"></script>
   <script src="public/keys.js"></script>
   <script src="public/speech.js"></script>
@@ -156,6 +157,11 @@ h1 {
   filter: drop-shadow(5px 5px 10px rgba(0,0,0,1.0));
 }
 
+#vis-row img {
+  width: 10em;
+  height: 10em;
+}
+
 </style>
   
 </head>
@@ -238,6 +244,17 @@ h1 {
                 <div class="row" id="zhlabel-row">
                   <div class="col-2">kiinaksi:</div>
                   <div class="col-10" id="zhlabel"></div>
+                </div>
+                <div class="row" id="vis-row">
+                  <div class="col-8"></div>
+                  <div class="col-2">
+                    <img src="public/images/embedding.png">
+                    <p>Merkitysavaruus</p>
+                  </div>
+                  <div class="col-2">
+                    <div id="qrcode"></div>
+                    <p>Tunniste</p>
+                  </div>
                 </div>
               </div>
 
@@ -323,6 +340,13 @@ function displayConcept(uri, label) {
             hideElem(row);
         }
     }
+
+    // QR code
+    new QRCode(document.getElementById("qrcode"), {
+      text: uri,
+      colorLight: "#ecd063",
+      colorDark: "#0b151c"
+    });
 }
 
 </script>
