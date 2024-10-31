@@ -33,9 +33,13 @@ body {
 }
 
 h1 {
-  font-size: 30px;
+  font-size: 36px;
   font-weight: bold;
   color: #b5d294;
+  padding-top: 20px;
+  padding-bottom: 20px;
+  border-bottom: 2px groove rgba(236, 208, 99, 0.5);
+  margin-bottom: 20px;
 }
 
 .height-full { height: 100vh; }
@@ -169,7 +173,21 @@ h1 {
   filter: drop-shadow(5px 5px 10px rgba(0,0,0,1.0));
 }
 
-#vis-row img {
+h1, #tab-concept .row {
+  width: 80%;
+}
+
+.group {
+  border-top: 2px groove rgba(236, 208, 99, 0.5);
+  margin-top: 8px;
+  padding-top: 8px;
+}
+
+#tab-concept .value {
+  color: #b5d294;
+}
+
+#concept-icons img {
   width: 150px;
   height: 150px;
 }
@@ -221,15 +239,13 @@ h1 {
             <div class="carousel-inner">
               <div id="tab-front" class="carousel-item active">
                 <h1>Finto: Yhteiset käsitteet kuvailuun ja analyysiin</h1>
-                <hr>
 
               </div>
               <div id="tab-vocab" class="carousel-item">
                 <img src="public/images/yso.png" class="float-end ms-4">
                 <h1>YSO: Yhteinen suomalais-saamelainen olemusto</h1>
-                <hr>
 
-                <p>Yhteinen suomalais-saamelainen olemusto YSO on viisikielinen,
+                <p>Yhteinen suomalais-saamelainen olemusto YSO on kuusikielinen,
                 etupäässä yleiskäsitteistä koostuva käsitekokoelma.  YSO on
                 rakennettu suomalais-saamelaisen kulttuuripiirin
                 sisällönkuvailutarpeiden ja käsitteistön pohjalta, ja se on
@@ -238,62 +254,59 @@ h1 {
 
               </div>
               <div id="tab-concept" class="carousel-item">
-                <h1 id="concept-label">concept label</h1>
-                <hr>
-
-                <div class="row" id="altlabel-row">
-                  <div class="col-2">myös:</div>
-                  <div class="col-10" id="altlabel"></div>
-                </div>
-                <div class="row" id="svlabel-row">
-                  <div class="col-2">ruotsiksi:</div>
-                  <div class="col-10" id="svlabel"></div>
-                </div>
-                <div class="row" id="selabel-row">
-                  <div class="col-2">pohjoissaameksi:</div>
-                  <div class="col-10" id="selabel"></div>
-                </div>
-                <div class="row" id="etlabel-row">
-                  <div class="col-2">viroksi:</div>
-                  <div class="col-10" id="etlabel"></div>
-                </div>
-                <div class="row" id="enlabel-row">
-                  <div class="col-2">englanniksi:</div>
-                  <div class="col-10" id="enlabel"></div>
-                </div>
-                <div class="row" id="zhlabel-row">
-                  <div class="col-2">kiinaksi:</div>
-                  <div class="col-10" id="zhlabel"></div>
-                </div>
-                <hr>
-
-                <div class="row" id="broader-row">
-                  <div class="col-2">yläkäsite:</div>
-                  <div class="col-10" id="broader">broad</div>
-                </div>
-                <hr>
-                <div class="row" id="narrower-row">
-                  <div class="col-2">alakäsitteet:</div>
-                  <div class="col-10" id="narrower">narrow</div>
-                </div>
-                <hr>
-                <div class="row" id="related-row">
-                  <div class="col-2">lähikäsitteet:</div>
-                  <div class="col-10" id="related">rel</div>
-                </div>
-                <hr>
-
-                <div class="row" id="vis-row">
-                  <div class="col-8"></div>
-                  <div class="col-2">
+                <div id="concept-icons" class="float-end ms-4">
+                  <div>
                     <img src="public/images/embedding.png">
                     <p>Merkitysavaruus</p>
                   </div>
-                  <div class="col-2">
+                  <div>
                     <div id="qrcode"></div>
                     <p>Tunniste</p>
                   </div>
                 </div>
+
+
+                <h1 id="concept-label">concept label</h1>
+
+                <div class="row" id="altlabel-row">
+                  <div class="col-3">myös:</div>
+                  <div class="col-9 value" id="altlabel"></div>
+                </div>
+                <div class="row" id="svlabel-row">
+                  <div class="col-3">ruotsiksi:</div>
+                  <div class="col-9 value" id="svlabel"></div>
+                </div>
+                <div class="row" id="selabel-row">
+                  <div class="col-3">pohjoissaameksi:</div>
+                  <div class="col-9 value" id="selabel"></div>
+                </div>
+                <div class="row" id="etlabel-row">
+                  <div class="col-3">viroksi:</div>
+                  <div class="col-9 value" id="etlabel"></div>
+                </div>
+                <div class="row" id="enlabel-row">
+                  <div class="col-3">englanniksi:</div>
+                  <div class="col-9 value" id="enlabel"></div>
+                </div>
+                <div class="row" id="zhlabel-row">
+                  <div class="col-3">kiinaksi:</div>
+                  <div class="col-9 value" id="zhlabel"></div>
+                </div>
+                <div class="row group" id="broader-row">
+                  <div class="col-3">yläkäsite:</div>
+                  <div class="col-9 value" id="broader">broad</div>
+                </div>
+                <div class="row group" id="narrower-row">
+                  <div class="col-3">alakäsitteet:</div>
+                  <div class="col-9 value" id="narrower">narrow</div>
+                </div>
+                <div class="row group" id="related-row">
+                  <div class="col-3">lähikäsitteet:</div>
+                  <div class="col-9 value" id="related">rel</div>
+                </div>
+
+
+
               </div>
 
               <div id="tab-search" class="carousel-item">
@@ -417,7 +430,7 @@ function displayConcept(uri) {
     // QR code
     new QRCode(document.getElementById("qrcode"), {
       text: uri,
-      colorLight: "#ecd063",
+      colorLight: "#b5d294",
       colorDark: "#0b151c"
     });
 }
