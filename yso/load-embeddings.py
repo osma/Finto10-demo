@@ -34,7 +34,7 @@ print("Reading embeddings from stdin and processing...")
 for line in sys.stdin:
     rec = json.loads(line)
     vectors.append(rec['embedding'])
-    payload.append({'uri': rec['uri'], 'label': rec['label']})
+    payload.append({'uri': rec['uri'], 'label': rec['label'], 'label_type': rec['label_type']})
 
 print(f"Got {len(payload)} embeddings. Uploading using batch size {BATCH_SIZE}...")
 

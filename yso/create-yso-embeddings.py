@@ -11,13 +11,16 @@ client = AzureOpenAI(
     azure_endpoint=os.getenv("AZURE_OPENAI_ENDPOINT")
 )
 
-def cdata_to_text(cdata):
-    preflabel = cdata['label_fi']
-    altlabels = ', '.join(cdata.get('altlabel_fi', []))
-    if altlabels:
-        return f"{preflabel}; {altlabels}"
-    else:
-        return preflabel
+def label_to_embedding(label, uri, label_type):
+    response = client.embeddings.create(
+        input=label,
+        model="text-embedding-3-large",
+    )
+
+    vector = response.data[0].embedding
+    output = {'uri': uri, 'label': label, 'label_type': label_type, 'embedding': vector}
+    json.dump(output, sys.stdout)
+    print()
 
 
 yso = json.load(sys.stdin)
@@ -25,14 +28,9 @@ yso = json.load(sys.stdin)
 for uri, cdata in yso.items():
     if cdata['type'] == 'http://www.w3.org/2004/02/skos/core#Collection':
         continue
-    text = cdata_to_text(cdata)
 
-    response = client.embeddings.create(
-        input=text,
-        model="text-embedding-3-large",
-    )
-
-    vector = response.data[0].embedding
-    output = {'uri': uri, 'label': text, 'embedding': vector}
-    json.dump(output, sys.stdout)
-    print()
+    # preflabel
+    label_to_embedding(cdata['label_fi'], uri, 'pref')
+    # altlabels
+    for altlabel in cdata.get('altlabel_fi', []):
+        label_to_embedding(altlabel, uri, 'alt')
