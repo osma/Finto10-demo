@@ -218,11 +218,13 @@ h1 {
             <div class="carousel-inner">
               <div id="tab-front" class="carousel-item active">
                 <h1>Finto: Yhteiset käsitteet kuvailuun ja analyysiin</h1>
+                <hr>
 
               </div>
               <div id="tab-vocab" class="carousel-item">
                 <img src="public/images/yso.png" class="float-end ms-4">
                 <h1>YSO: Yhteinen suomalais-saamelainen olemusto</h1>
+                <hr>
 
                 <p>Yhteinen suomalais-saamelainen olemusto YSO on viisikielinen,
                 etupäässä yleiskäsitteistä koostuva käsitekokoelma.  YSO on
@@ -234,6 +236,7 @@ h1 {
               </div>
               <div id="tab-concept" class="carousel-item">
                 <h1 id="concept-label">concept label</h1>
+                <hr>
 
                 <div class="row" id="altlabel-row">
                   <div class="col-2">myös:</div>
@@ -259,6 +262,24 @@ h1 {
                   <div class="col-2">kiinaksi:</div>
                   <div class="col-10" id="zhlabel"></div>
                 </div>
+                <hr>
+
+                <div class="row" id="broader-row">
+                  <div class="col-2">yläkäsite:</div>
+                  <div class="col-10" id="broader">broad</div>
+                </div>
+                <hr>
+                <div class="row" id="narrower-row">
+                  <div class="col-2">alakäsitteet:</div>
+                  <div class="col-10" id="narrower">narrow</div>
+                </div>
+                <hr>
+                <div class="row" id="related-row">
+                  <div class="col-2">lähikäsitteet:</div>
+                  <div class="col-10" id="related">rel</div>
+                </div>
+                <hr>
+
                 <div class="row" id="vis-row">
                   <div class="col-8"></div>
                   <div class="col-2">
@@ -321,11 +342,16 @@ function hideElem(elem) {
     elem.classList.add('visually-hidden');
 }
 
-function displayConcept(uri, label) {
-    cdata = yso[uri];
+function cLabel(uri) {
+    const cdata = yso[uri];
+    return cdata.label_fi;
+}
+
+function displayConcept(uri) {
+    const cdata = yso[uri];
 
     const heading = document.getElementById('concept-label');
-    heading.innerText = label;
+    heading.innerText = cdata.label_fi;
 
     // altlabel
     const altlabelRow = document.getElementById('altlabel-row');
@@ -353,6 +379,36 @@ function displayConcept(uri, label) {
         } else {
             hideElem(row);
         }
+    }
+
+    // broader
+    const broaderRow = document.getElementById('broader-row');
+    if (cdata.broader) {
+        showElem(broaderRow);
+        const elem = document.getElementById('broader');
+        elem.innerText = cdata.broader.map(cLabel).join('; ');
+    } else {
+        hideElem(broaderRow);
+    }
+
+    // narrower
+    const narrowerRow = document.getElementById('narrower-row');
+    if (cdata.narrower) {
+        showElem(narrowerRow);
+        const elem = document.getElementById('narrower');
+        elem.innerText = cdata.narrower.map(cLabel).join('; ');
+    } else {
+        hideElem(narrowerRow);
+    }
+
+    // related
+    const relatedRow = document.getElementById('related-row');
+    if (cdata.related) {
+        showElem(relatedRow);
+        const elem = document.getElementById('related');
+        elem.innerText = cdata.related.map(cLabel).join('; ');
+    } else {
+        hideElem(relatedRow);
     }
 
     // QR code
@@ -419,7 +475,7 @@ async function show(keyword) {
     const uri = results[0].payload.uri;
     const label = yso[uri].label_fi
 
-    displayConcept(uri, label);
+    displayConcept(uri);
 
     say(`Tässä käsite ${label}`);
     waitForAction();
