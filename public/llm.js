@@ -33,10 +33,14 @@ const INTENT_PROMPT = `Your task is to classify the user intent into categories 
 Example input for the show category:
 - näytä käsite ilmastonmuutos
 - näytä ilmastonmuutos
+- näytä vaikka ilmastonmuutos
 - avaa ilmastonmuutos
+- avaa vaikka ilmastonmuutos
 - onko ilmastonmuutos sanastossa
+- onko siellä ilmastonmuutos
 - löytyykö sanastosta ilmastonmuutosta
 - löytyykö ilmastonmuutosta
+- löytyykö sieltä ilmastonmuutosta
 
 Output for these inputs should be:
 show:ilmastonmuutos
