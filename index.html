@@ -551,6 +551,7 @@ function displayConcept(uri) {
 <script>
 
 var currentUri = null;
+var vocabVisited = false;
 const TAB = { 'front': 0, 'vocab': 1, 'concept': 2, 'search': 3 };
 const carousel = new bootstrap.Carousel('#main-carousel');
 carousel.pause();
@@ -634,7 +635,12 @@ async function search(keyword) {
 function vocab() {
     setEnergy(10);
     carousel.to(TAB.vocab);
-    say('Esineiden kuvailuun sopii parhaiten Yhteinen suomalais-saamelainen olemusto. Mitä tietoa etsit?');
+    if (!vocabVisited) {
+        say('Esineiden kuvailuun sopii parhaiten Yhteinen suomalais-saamelainen olemusto. Mitä tietoa etsit?');
+        vocabVisited = true;
+    } else {
+        say('Tämä on Yhteinen suomalais-saamelainen olemusto. Mitä tietoa etsit?');
+    }
     waitForAction();
 }
 
