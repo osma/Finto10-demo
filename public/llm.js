@@ -66,10 +66,17 @@ Example input for the similar category:
 - näytä samantapaisia
 - näytä samankaltaisia käsitteitä
 - näytä samankaltaisia
+- näytä samanlaisia käsitteitä
+- näytä samanlaisia
 - onko muita samantapaisia käsitteitä
 - onko muita samankaltaisia käsitteitä
+- onko muita samanlaisia käsitteitä
 - onko muita samantapaisia
 - onko muita samankaltaisia
+- onko muita samanlaisia
+- onko samantapaisia
+- onko samankaltaisia
+- onko samanlaisia
 
 Output for these inputs should be:
 similar

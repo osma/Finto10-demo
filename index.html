@@ -114,6 +114,12 @@ h1 {
   float: right;
 }
 
+.botui-actions-text-input {
+  border: 1px solid #b5d294;
+  border-style: groove;
+  border-radius: 3px;
+}
+
 #energy-row {
   height: 12vh;
   font-size: 20px;
@@ -439,9 +445,13 @@ h1, #tab-front .row, #tab-concept .row, #tab-vocab p {
 
 <script>
 
-function displaySearchResults(query, results) {
+function displaySearchResults(query, results, is_similar) {
     const heading = document.getElementById('search-heading');
-    heading.innerText = 'Hakutulokset: ' + query;
+    if (is_similar) {
+        heading.innerText = `Samankaltaisia käsitteitä kuin ${query}`;
+    } else {
+        heading.innerText = `Hakutulokset: ${query}`;
+    }
 
     const ul = document.getElementById('search-results');
     ul.innerHTML = '';
@@ -563,7 +573,7 @@ async function chooseAction(res) {
     const intent = await parseIntent(res.value);
     console.log(intent);
     if (intent.action == "search") {
-        return search(intent.keyword);
+        return search(intent.keyword, false);
     } else if (intent.action == "show") {
         return show(intent.keyword);
     } else if (intent.action == "home") {
@@ -606,7 +616,7 @@ function unknown() {
 }
 
 async function similar() {
-    return search(cLabel(currentUri));
+    return search(cLabel(currentUri), true);
 }
 
 async function show(keyword) {
@@ -625,16 +635,20 @@ async function show(keyword) {
 }
 
 
-async function search(keyword) {
+async function search(keyword, is_similar) {
     setEnergy(30);
     carousel.to(TAB.search);
     const embedding = await getEmbedding(keyword);
     const results = await searchNearbyVectors(embedding);
 
-    displaySearchResults(keyword, results);
+    displaySearchResults(keyword, results, is_similar);
     setEnergy(10);
 
-    say('Tässä hakutulokset hakusanalla ' + keyword + ".");
+    if (is_similar) {
+        say('Tässä muita samankaltaisia käsitteitä.');
+    } else {
+        say('Tässä hakutulokset hakusanalla ' + keyword + ".");
+    }
     waitForAction();
 }
 
