@@ -550,6 +550,7 @@ function displayConcept(uri) {
 
 <script>
 
+var currentUri = null;
 const TAB = { 'front': 0, 'vocab': 1, 'concept': 2, 'search': 3 };
 const carousel = new bootstrap.Carousel('#main-carousel');
 carousel.pause();
@@ -565,6 +566,8 @@ async function chooseAction(res) {
         return show(intent.keyword);
     } else if (intent.action == "home") {
         return vocab();
+    } else if (intent.action == "similar") {
+        return similar();
     } else {
         return unknown();
     }
@@ -595,12 +598,17 @@ function unknown() {
     waitForAction();
 }
 
+async function similar() {
+    return search(cLabel(currentUri));
+}
+
 async function show(keyword) {
     setEnergy(80);
     carousel.to(TAB.concept);
     const embedding = await getEmbedding(keyword);
     const results = await searchNearbyVectors(embedding);
     const uri = results[0].payload.uri;
+    currentUri = uri;
     const label = yso[uri].label_fi
 
     displayConcept(uri);
