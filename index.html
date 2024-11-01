@@ -552,6 +552,7 @@ function displayConcept(uri) {
 
 var currentUri = null;
 var vocabVisited = false;
+var helpGiven = false;
 const TAB = { 'front': 0, 'vocab': 1, 'concept': 2, 'search': 3 };
 const carousel = new bootstrap.Carousel('#main-carousel');
 carousel.pause();
@@ -595,7 +596,12 @@ function say(text) {
 }
 
 function unknown() {
-    say('En ymmärtänyt pyyntöä. Voit pyytää näyttämään käsitteen, hakea hakusanalla tai mennä etusivulle.');
+    if (!helpGiven) {
+        say('En ymmärtänyt pyyntöä. Voit pyytää näyttämään käsitteen, hakea hakusanalla tai mennä etusivulle.');
+        helpGiven = true;
+    } else {
+        say('Nyt en ymmärtänyt. Voitko toistaa?');
+    }
     waitForAction();
 }
 
